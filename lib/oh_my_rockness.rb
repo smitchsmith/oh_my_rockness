@@ -9,7 +9,7 @@ end
 Capybara.default_driver = :poltergeist
 
 module OhMyRockness
-  URL = "http://ohmyrockness.com/shows/just-announced?all=true"
+  URL = "http://ohmyrockness.com/shows?all=true"
 
   class Index
     attr_reader :url
