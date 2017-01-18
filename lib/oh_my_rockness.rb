@@ -39,7 +39,8 @@ module OhMyRockness
         date:    date,
         artists: artists,
         venue:   venue,
-        cost:    cost
+        cost:    cost,
+        tickets_url: tickets_url
       }
     end
 
@@ -50,7 +51,9 @@ module OhMyRockness
     end
 
     def artists
-      row.all(".bands a").map(&:text)
+      row.all(".bands a").map.with_index do |tag, i|
+        {name: tag.text, order: i}
+      end
     end
 
     def venue
@@ -69,6 +72,17 @@ module OhMyRockness
         "Free"
       elsif (cost = row.first(".tickets .price"))
         cost.text
+      end
+    end
+
+    def tickets_url
+      link = row.first(".tickets .rsvp") || row.first(".tickets .ticketLink")
+      if link && (url = link["href"])
+        end_url = if url.include?("shareasale")
+          actual_link = CGI.parse(URI.parse(url).query)["urllink"]
+          actual_link.first if actual_link
+        end
+        end_url || url
       end
     end
   end
